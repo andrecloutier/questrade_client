@@ -25,7 +25,8 @@ module QuestradeClient
 #      puts "New refresh token: #{r.body['refresh_token']}"
       endpoint = r.body['api_server']
       token = r.body['access_token']
-      return Client.new(endpoint: endpoint, token: token)
+      new_refresh_token = r.body['refresh_token']
+      return Client.new(endpoint: endpoint, token: token, refresh_token: new_refresh_token)
     else
 #      puts "Login failed!"
 #      puts r.body
@@ -34,11 +35,12 @@ module QuestradeClient
   end
 
   class Client
-    attr_reader :endpoint, :token
+    attr_reader :endpoint, :token, :refresh_token
 
     def initialize(options = {})
       @endpoint = options[:endpoint].to_s
       @token = options[:token].to_s
+      @refresh_token = options[:refresh_token].to_s
       raise ArgumentError, ":endpoint can't be blank" if @endpoint.empty?
       raise ArgumentError, ":token can't be blank" if @token.empty?
     end
